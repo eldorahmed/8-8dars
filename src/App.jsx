@@ -1,32 +1,37 @@
-import React from "react";
-import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import Login from "./pages/Login";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
 import Home from "./pages/Home";
-import ProtectedRoutes from "./layouts/ProtectedRoutes";
-import RootLayout from "./layouts/RootLayout";
-const App = () => {
-  const admin = false;
+import Mainlayout from "./layout/Mainlayout";
+import { useAppStore } from "./lib/zustand";
+
+export default function App() {
+  const admin = useAppStore((state) => state.admin);
+
   const routes = createBrowserRouter([
     {
       path: "/",
       element: (
         <ProtectedRoutes admin={admin}>
-          <RootLayout />
+          <Mainlayout />
         </ProtectedRoutes>
       ),
       children: [
         {
           index: true,
-          element:admin? <Home />:<Navigate to="/login"/>,
+          element: <Home />,
         },
       ],
     },
     {
       path: "/login",
-      element:admin?<Navigate to="/"/> : <Login />,
+      element: admin ? <Navigate to={"/"} /> : <Login />,
     },
   ]);
-  return <RouterProvider router={routes} />;
-};
 
-export default App;
+  return <RouterProvider router={routes} />;
+}
