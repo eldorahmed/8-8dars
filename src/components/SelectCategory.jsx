@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 
-export default function SelectCategory() {
+export default function SelectCategory({ outsideCategory }) {
   const flowers = useAppStore((state) => state.flowers);
   const [open, setOpen] = useState(false);
 
@@ -24,7 +24,12 @@ export default function SelectCategory() {
         <Label onClick={handleFocus} className="ml-2">
           Turkumni tanlang
         </Label>
-        <Select open={open} onOpenChange={setOpen}>
+        <Select
+          defaultValue={outsideCategory && outsideCategory}
+          name="category"
+          open={open}
+          onOpenChange={setOpen}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Turkumni tanlang" />
           </SelectTrigger>

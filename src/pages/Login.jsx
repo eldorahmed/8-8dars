@@ -19,6 +19,7 @@ export default function Login() {
     e.preventDefault();
     const result = getFormData(e.target);
     setLoading(true);
+    console.log("result: ", result);
 
     login(result)
       .then((res) => {
@@ -37,13 +38,13 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="flex w-full max-w-96 flex-col gap-5"
       >
-        <div className="justify-center flex items-center gap-3">
+        <div className="flex items-center justify-center gap-3">
           <h2 className="text-2xl font-bold tracking-wider">Flower</h2>
-          {/* <img
+          <img
             src={spinFlower}
             alt="login uchun gul rasmi"
             className="spinFlowerIcon h-8 w-8"
-          /> */}
+          />
         </div>
         <div>
           <Label htmlFor="username">Foydalanuvchining Ismi</Label>

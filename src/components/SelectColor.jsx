@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 
-export default function SelectColor() {
+export default function SelectColor({ outsideColor }) {
   const flowers = useAppStore((state) => state.flowers);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("Rangni tanlang ");
+  const [value, setValue] = useState(outsideColor ? outsideColor : "");
 
   const handleFocus = () => {
     setOpen(!open);
@@ -26,18 +26,19 @@ export default function SelectColor() {
           Rangni*
         </Label>
         <Select
-          value={value}
+          name="color"
+          defaultValue={outsideColor && outsideColor}
           onValueChange={setValue}
           open={open}
           onOpenChange={setOpen}
         >
           <SelectTrigger className="w-[180px]">
-            <SelectValue>
+            <SelectValue placeholder="Rangni tanlang ">
               {" "}
               <div className="flex items-center gap-2">
                 <span
                   style={{ backgroundColor: value }}
-                  className="inline-block h-4 w-4 rounded-full"
+                  className="inline-block h-4 w-4 rounded-full border"
                 ></span>
                 <span className="lowercase tracking-widest">{value}</span>
               </div>
@@ -50,7 +51,7 @@ export default function SelectColor() {
                   <div className="flex items-center gap-2">
                     <span
                       style={{ backgroundColor: value }}
-                      className="inline-block h-4 w-4 rounded-full"
+                      className="inline-block h-4 w-4 rounded-full border"
                     ></span>
                     <span className="lowercase tracking-widest">{value}</span>
                   </div>

@@ -1,9 +1,5 @@
-"use client";
-
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useAppStore } from "../lib/zustand";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,18 +15,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { collectItem } from "../lib/my-utils";
 import { Label } from "@/components/ui/label";
 
-export function SelectCountry({ outsideCountry }) {
-  const flowers = useAppStore((state) => state.flowers);
-  const country = flowers && collectItem(flowers, "country");
+export default function FiltersByCountry({ countries, handleEnableToFilter }) {
   const button = React.useRef(null);
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(
-    outsideCountry ? outsideCountry : "",
-  );
-
+  const [value, setValue] = React.useState("");
   React.useEffect(() => {
     let id = null;
     const changer = () => {
@@ -39,6 +29,7 @@ export function SelectCountry({ outsideCountry }) {
           const element = document.querySelector(
             "[data-radix-popper-contents-wrapper]",
           );
+          console.log(element);
           element.style.width = button.current.offsetWidth + "px";
         }, 1);
       }
@@ -48,14 +39,14 @@ export function SelectCountry({ outsideCountry }) {
 
     window.addEventListener("resize", changer);
     return () => {
-      clearTimeout(id && id);
+      clearTimeout(id);
       window.removeEventListener("resize", changer);
       id = null;
     };
   }, [open, button]);
 
   return (
-    flowers && (
+    countries && (
       <div className="flex w-full flex-col gap-1">
         <input
           className="sr-only"
@@ -65,9 +56,15 @@ export function SelectCountry({ outsideCountry }) {
           name="country"
         />
         <Label className="ml-2" onClick={() => setOpen(!open)}>
-          Hudud*
+          Hudud bo'yicha
         </Label>
-        <Popover className="w-full" open={open} onOpenChange={setOpen}>
+
+        <Popover
+          className="w-full"
+          open={open}
+          onValueChange={handleEnableToFilter}
+          onOpenChange={setOpen}
+        >
           <PopoverTrigger asChild>
             <Button
               ref={button}
@@ -77,7 +74,7 @@ export function SelectCountry({ outsideCountry }) {
               className="justify-between"
             >
               {value
-                ? country.find((country) => country === value)
+                ? countries.find((country) => country === value)
                 : "Hududni tanlang..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
@@ -85,30 +82,28 @@ export function SelectCountry({ outsideCountry }) {
           <PopoverContent className="w-full p-0">
             <Command className="w-full">
               <CommandInput placeholder="Hududni qidirish..." />
-              <CommandList>
+              <CommandList className="w-full">
                 <CommandEmpty>Bunday hudud topilmadi.</CommandEmpty>
                 <CommandGroup className="max-h-[105px] w-full">
-                  {country.map((country, index) => {
-                    return (
-                      <CommandItem
-                        className="w-full"
-                        key={country}
-                        value={country}
-                        onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
-                          setOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            value === country ? "opacity-100" : "opacity-0",
-                          )}
-                        />
-                        {country}
-                      </CommandItem>
-                    );
-                  })}
+                  {countries.map((country) => (
+                    <CommandItem
+                      className="w-full"
+                      key={country}
+                      value={country}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === country ? "opacity-100" : "opacity-0",
+                        )}
+                      />
+                      {country}
+                    </CommandItem>
+                  ))}
                 </CommandGroup>
               </CommandList>
             </Command>

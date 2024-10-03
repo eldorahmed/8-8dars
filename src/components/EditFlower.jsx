@@ -17,16 +17,18 @@ import LifeTime from "./LifeTime";
 import UploadImage from "./UploadImage";
 import { toast } from "sonner";
 import Summaries from "./Summaries";
-import { refreshToken, sendFlower } from "../request";
+import { editFlower, refreshToken } from "../request";
 import { useEffect, useState } from "react";
 import { UpdateIcon } from "@radix-ui/react-icons";
 
-export default function AddNewItemModal({ sendingData, setSendingData }) {
+export default function EditFlower({ editedData, editing, setEditing }) {
+  console.log(editedData?.name);
+
   const [loading, setLoading] = useState(false);
   const admin = useAppStore((state) => state.admin);
   const setAdmin = useAppStore((state) => state.setAdmin);
-  const addItemModal = useAppStore((state) => state.addItemModal);
-  const setAddItemModal = useAppStore((state) => state.setAddItemModal);
+  const editModal = useAppStore((state) => state.editModal);
+  const setEditModal = useAppStore((state) => state.setEditModal);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,20 +37,19 @@ export default function AddNewItemModal({ sendingData, setSendingData }) {
     if (checker) {
       toast.warning(errorMessage);
     } else {
-      setSendingData(result);
-      console.log(result);
+      setEditing({ ...result, id: editedData.id });
     }
   };
 
   useEffect(() => {
-    if (sendingData) {
+    if (editing) {
       setLoading(true);
-      sendFlower(admin?.access_token, sendingData)
+      editFlower(admin?.access_token, editing)
         .then((res) => {
           toast.dismiss();
           toast.success(res);
-          setSendingData(null);
-          setAddItemModal();
+          setEditing(null);
+          setEditModal();
         })
         .catch(({ message }) => {
           if (message === "403") {
@@ -65,16 +66,16 @@ export default function AddNewItemModal({ sendingData, setSendingData }) {
         })
         .finally(() => setLoading(false));
     }
-  }, [sendingData, admin]);
+  }, [admin, editing]);
 
   return (
-    <Dialog open={addItemModal} onOpenChange={setAddItemModal}>
+    <Dialog open={editModal} onOpenChange={setEditModal}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Ma'lumot qo'shish</DialogTitle>
+          <DialogTitle>Ma'lumot tahrirlash</DialogTitle>
           <DialogDescription>
-            Inputlarga to'g'ri ma'lumot kiritish orqali yangi ma'lumot qo'shish
-            mumkin
+            Inputlarga qayta ma'lumot kiritish orqali yangi ma'lumotga
+            o'zgartirish mumkin
           </DialogDescription>
           <form className="" onSubmit={handleSubmit}>
             <div className="max-h-96 overflow-x-hidden overflow-y-scroll px-2">
@@ -84,6 +85,8 @@ export default function AddNewItemModal({ sendingData, setSendingData }) {
                 </Label>
                 <Input
                   id="name"
+                  defaultValue={editedData?.name}
+                  autoComplete="off"
                   placeholder="Gul nomini kiriting"
                   name="name"
                 />
@@ -94,21 +97,23 @@ export default function AddNewItemModal({ sendingData, setSendingData }) {
                 </Label>
                 <Input
                   id="price"
+                  defaultValue={editedData.price}
+                  autoComplete="off"
                   placeholder="Gul narxini kiriting"
                   name="price"
                   type="number"
                 />
               </div>
               <div className="mb-3 flex items-center justify-between">
-                <SelectCategory />
-                <SelectColor />
+                <SelectCategory outsideCategory={editedData.category} />
+                <SelectColor outsideColor={editedData.color} />
               </div>
 
-              <div className="relative mb-3">
-                <SelectCountry />
+              <div className="mb-3">
+                <SelectCountry outsideCountry={editedData.country} />
               </div>
               <div>
-                <Summaries />
+                <Summaries text={editedData.summary} />
               </div>
               <div className="mb-3">
                 <Label className="ml-2" htmlFor="smell">
@@ -116,24 +121,26 @@ export default function AddNewItemModal({ sendingData, setSendingData }) {
                 </Label>
                 <Input
                   name="smell"
+                  defaultValue={editedData.smell}
+                  autoComplete="off"
                   type="text"
                   id="smell"
                   placeholder="Gul hidini kiriting..."
                 />
               </div>
               <div>
-                <LifeTime />
+                <LifeTime time={editedData.lifetime} />
               </div>
               <div className="w-full">
-                <UploadImage />
+                <UploadImage outsideImg={editedData.imageUrl} />
               </div>
             </div>
             <div className="flex w-full justify-end gap-5 px-5">
-              <Button onClick={setAddItemModal} variant="outline" type="button">
+              <Button onClick={setEditModal} variant="outline" type="button">
                 Bekor qilish
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? <UpdateIcon className="animate-spin" /> : "Qo'shish"}
+                {loading ? <UpdateIcon className="animate-spin" /> : "O'zgartirish"}
               </Button>
             </div>
           </form>

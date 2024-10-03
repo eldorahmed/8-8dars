@@ -4,6 +4,8 @@ export const useAppStore = create((set) => ({
   admin: JSON.parse(localStorage.getItem("admin")) || null,
   flowers: null,
   addItemModal: false,
+  editModal: false,
+  sidebarOpen: localStorage.getItem("sidebar") === "on" ? true : false,
   setAdmin: (admin) =>
     set(() => {
       if (admin) {
@@ -11,7 +13,7 @@ export const useAppStore = create((set) => ({
       } else {
         localStorage.removeItem("admin");
       }
-      return { admin };
+      return { admin, flowers: null };
     }),
   setFlowers: (flowers) =>
     set(() => {
@@ -19,4 +21,12 @@ export const useAppStore = create((set) => ({
     }),
   setAddItemModal: () =>
     set((state) => ({ addItemModal: !state.addItemModal })),
+  setEditModal: () => set((state) => ({ editModal: !state.editModal })),
+  setSidebarOpen: () =>
+    set((state) => {
+      state.sidebarOpen
+        ? localStorage.setItem("sidebar", "off")
+        : localStorage.setItem("sidebar", "on");
+      return { sidebarOpen: !state.sidebarOpen };
+    }),
 }));
