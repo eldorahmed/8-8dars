@@ -28,8 +28,8 @@ export default function FiltersByColor({ colors, handleEnableToFilter }) {
           name="color"
           onOpenChange={setOpen}
           open={open}
-          onValueChange={(valeu) => {
-            setValue(valeu);
+          onValueChange={(value) => {
+            setValue(value);
             handleEnableToFilter();
           }}
         >

@@ -10,7 +10,7 @@ export default function Footer() {
           >
             JSON API
           </a>{" "}
-          yordamida qurilgan App
+          Powered &copy;
         </div>
       </div>
     </div>

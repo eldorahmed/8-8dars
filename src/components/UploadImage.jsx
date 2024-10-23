@@ -12,7 +12,6 @@ import { allowImageSize } from "../lib/my-utils";
 export default function UploadImage({ outsideImg }) {
   const [value, setValue] = useState(outsideImg ? outsideImg : "");
   const urlInput = useRef(null);
-
   const handleUploadImage = (image, type = "local") => {
     if (type === "url") {
       setValue(image);

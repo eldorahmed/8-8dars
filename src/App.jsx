@@ -13,6 +13,7 @@ import Admins from "./pages/Admins";
 
 export default function App() {
   const admin = useAppStore((state) => state.admin);
+  const flowers = useAppStore((state) => state.flowers);
 
   const routes = createBrowserRouter([
     {
@@ -29,7 +30,7 @@ export default function App() {
         },
         {
           path: "statistics",
-          element: <Statistics />,
+          element: flowers ? <Statistics /> : <Navigate to='/'/>,
         },
         {
           path: "admins",

@@ -140,3 +140,37 @@ export const editFlower = async (token, flower) => {
     throw new Error("Nimadir hato ketti!");
   }
 };
+export const getAdmins = async (token) => {
+  const res = await fetch(BASE_URL + "/users", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (res.status === 200 || res.status === 201) {
+    return await res.json();
+  } else if (res.status == 403) {
+    throw new Error(403);
+  } else {
+    throw new Error("Nimadir hatolik bo'ldi");
+  }
+};
+export const editAdmin = async (token, admin) => {
+  const res = await fetch(BASE_URL + `/users/${admin.id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(admin),
+  });
+
+  if (res.status === 200 || res.status === 201) {
+    return await res.json();
+  } else if (res.status === 403) {
+    throw new Error("403");
+  } else {
+    throw new Error("Nimadir hato ketti!");
+  }
+};
